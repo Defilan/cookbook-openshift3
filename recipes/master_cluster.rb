@@ -374,6 +374,7 @@ if certificate_server['fqdn'] == first_master['fqdn'] || !is_certificate_server
     command "[[ $(curl --silent #{node['cookbook-openshift3']['openshift_master_api_url']}/healthz/ready --cacert #{node['cookbook-openshift3']['openshift_master_config_dir']}/ca.crt --cacert #{node['cookbook-openshift3']['openshift_master_config_dir']}/ca-bundle.crt) =~ \"ok\" ]]"
     retries 120
     retry_delay 1
+    not_if { first_master['fqdn'] == node['fqdn'] }
   end
 
   execute 'Activate services for Master CONTROLLERS on first master' do
