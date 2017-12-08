@@ -88,6 +88,7 @@ remote_file "Retrieve client certificate from Master[#{certificate_server['fqdn'
   notifies :run, 'execute[Extract certificate to Master folder]', :immediately
   retries 12
   retry_delay 5
+  only_if { certificate_server == first_master || !is_certificate_server }
 end
 
 execute 'Un-encrypt master certificate tgz files' do
