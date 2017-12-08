@@ -61,6 +61,10 @@ module OpenShiftHelper
       certificate_server['fqdn'] == node['fqdn']
     end
 
+    def on_dedicated_certificate_server?
+      certificate_server != first_master && on_certificate_server?
+    end
+
     protected
 
     attr_reader :node

@@ -11,6 +11,7 @@ etcd_servers = server_info.etcd_servers
 master_peers = server_info.master_peers
 certificate_server = server_info.certificate_server
 is_certificate_server = server_info.on_certificate_server?
+is_dedicated_certificate_server = server_info.on_dedicated_certificate_server?
 
 ose_major_version = node['cookbook-openshift3']['deploy_containerized'] == true ? node['cookbook-openshift3']['openshift_docker_image_version'] : node['cookbook-openshift3']['ose_major_version']
 
@@ -88,7 +89,7 @@ remote_file "Retrieve client certificate from Master[#{certificate_server['fqdn'
   notifies :run, 'execute[Extract certificate to Master folder]', :immediately
   retries 12
   retry_delay 5
-  only_if { certificate_server == first_master || !is_certificate_server }
+  not_if { is_dedicated_certificate_server }
 end
 
 execute 'Un-encrypt master certificate tgz files' do
@@ -244,7 +245,7 @@ if is_certificate_server
   end
 end
 
-unless is_certificate_server
+unless is_dedicated_certificate_server
   remote_file "Retrieve peer certificate from Master[#{certificate_server['fqdn']}]" do
     path "#{node['cookbook-openshift3']['openshift_master_config_dir']}/openshift-#{node['fqdn']}.tgz.enc"
     source "http://#{certificate_server['ipaddress']}:#{node['cookbook-openshift3']['httpd_xfer_port']}/master/generated_certs/openshift-#{node['fqdn']}.tgz.enc"
@@ -273,6 +274,7 @@ package "#{node['cookbook-openshift3']['openshift_service_type']}-master" do
   version node['cookbook-openshift3']['ose_version'] unless node['cookbook-openshift3']['ose_version'].nil?
   notifies :run, 'execute[daemon-reload]', :immediately
   not_if { node['cookbook-openshift3']['deploy_containerized'] }
+  not_if { is_dedicated_certificate_server }
   retries 3
 end
 
