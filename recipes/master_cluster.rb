@@ -364,6 +364,7 @@ if certificate_server['fqdn'] == first_master['fqdn'] || !is_certificate_server
     command 'sleep 15'
     action :run
     not_if "systemctl is-active #{node['cookbook-openshift3']['openshift_service_type']}-master-api"
+    only_if { first_master['fqdn'] == node['fqdn'] }
   end
 
   execute 'Activate services for Master API on all masters' do
