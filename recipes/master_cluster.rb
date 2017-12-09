@@ -247,8 +247,8 @@ end
 
 unless is_dedicated_certificate_server
   remote_file "Retrieve peer certificate from Master[#{certificate_server['fqdn']}]" do
-    path "#{node['cookbook-openshift3']['openshift_master_config_dir']}/openshift-#{node['fqdn']}.tgz.enc"
-    source "http://#{certificate_server['ipaddress']}:#{node['cookbook-openshift3']['httpd_xfer_port']}/master/generated_certs/openshift-#{node['fqdn']}.tgz.enc"
+    path "#{node['cookbook-openshift3']['openshift_master_config_dir']}/openshift-master-#{node['fqdn']}.tgz.enc"
+    source "http://#{certificate_server['ipaddress']}:#{node['cookbook-openshift3']['httpd_xfer_port']}/master/generated_certs/openshift-master-#{node['fqdn']}.tgz.enc"
     action :create_if_missing
     notifies :run, 'execute[Un-encrypt master certificate peer tgz files]', :immediately
     notifies :run, 'execute[Extract peer certificate to Master folder]', :immediately
@@ -257,13 +257,13 @@ unless is_dedicated_certificate_server
   end
 
   execute 'Un-encrypt master certificate peer tgz files' do
-    command "openssl enc -d -aes-256-cbc -in openshift-#{node['fqdn']}.tgz.enc -out openshift-#{node['fqdn']}.tgz -k '#{encrypted_file_password}'"
+    command "openssl enc -d -aes-256-cbc -in openshift-master-#{node['fqdn']}.tgz.enc -out openshift-msater-#{node['fqdn']}.tgz -k '#{encrypted_file_password}'"
     cwd node['cookbook-openshift3']['openshift_master_config_dir']
     action :nothing
   end
 
   execute 'Extract peer certificate to Master folder' do
-    command "tar xzf openshift-#{node['fqdn']}.tgz"
+    command "tar xzf openshift-master-#{node['fqdn']}.tgz"
     cwd node['cookbook-openshift3']['openshift_master_config_dir']
     action :nothing
   end
