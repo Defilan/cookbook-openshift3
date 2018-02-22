@@ -92,7 +92,7 @@ default['cookbook-openshift3']['openshift_common_svc_names'] = ['openshift', 'op
 default['cookbook-openshift3']['openshift_common_registry_url'] = node['cookbook-openshift3']['openshift_deployment_type'] =~ /enterprise/ ? 'openshift3/ose-${component}:${version}' : 'openshift/origin-${component}:${version}'
 default['cookbook-openshift3']['openshift_cloud_provider_config_dir'] = "#{node['cookbook-openshift3']['openshift_common_cloud_provider_dir']}/cloudprovider"
 default['cookbook-openshift3']['openshift_docker_insecure_registry_arg'] = []
-default['cookbook-openshift3']['openshift_docker_add_registry_arg'] = []
+default['cookbook-openshift3']['openshift_docker_add_registry_arg'] = ['registry.access.redhat.com']
 default['cookbook-openshift3']['openshift_docker_block_registry_arg'] = []
 default['cookbook-openshift3']['openshift_docker_insecure_registries'] = node['cookbook-openshift3']['openshift_docker_add_registry_arg'].empty? ? [node['cookbook-openshift3']['openshift_common_portal_net']] : [node['cookbook-openshift3']['openshift_common_portal_net']] + node['cookbook-openshift3']['openshift_docker_insecure_registry_arg']
 default['cookbook-openshift3']['openshift_docker_cli_image'] = node['cookbook-openshift3']['openshift_deployment_type'] =~ /enterprise/ ? 'openshift3/ose' : 'openshift/origin'
